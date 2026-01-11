@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ATELIER — Stylish Editorial Redesign</title>
+
+<!-- Fonts: Cormorant Garamond for display, Sora for UI -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* -------------------------
+   Design tokens
+   ------------------------- */
+:root{
+  --container:1200px;
+
+  /* New color palette: Charcoal, Warm Sand, Saffron Accent */
+  --bg: #f7f5f1;                 /* warm paper */
+  --surface: #ffffff;
+  --charcoal: #0f1113;           /* deep charcoal */
+  --muted: #7b7b78;              /* warm gray */
+  --sand: #e9e2d8;               /* soft sand */
+  --accent: #d87f2a;             /* saffron / warm accent */
+  --accent-dark: #b05a1f;
+
+  /* Fluid type scale */
+  --fs-xxs: clamp(0.68rem, 0.62rem + 0.2vw, 0.82rem);
+  --fs-xs: clamp(0.82rem, 0.78rem + 0.2vw, 0.98rem);
+  --fs-sm: clamp(0.98rem, 0.92rem + 0.4vw, 1.12rem);
+  --fs-md: clamp(1.18rem, 1.05rem + 0.8vw, 1.36rem);
+  --fs-lg: clamp(1.6rem, 1.25rem + 1.6vw, 2.6rem);
+  --fs-xl: clamp(2.6rem, 2.1rem + 2.6vw, 4rem);
+
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --gap: 28px;
+  --transition-fast: 180ms cubic-bezier(.2,.9,.25,1);
+  --transition-med: 260ms cubic-bezier(.2,.9,.25,1);
+
+  --shadow-soft: 0 18px 50px rgba(15,17,19,0.10);
+  --shadow-strong: 0 36px 90px rgba(15,17,19,0.16);
+}
+
+/* -------------------------
+   Reset & base
+   ------------------------- */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: "Sora", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:
+    radial-gradient(600px 300px at 8% 12%, rgba(216,127,42,0.06), transparent 8%),
+    linear-gradient(180deg, var(--bg), #f3efe9 60%);
+  color:var(--charcoal);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.5;
+  padding-top:92px; /* header space */
+}
+
+/* -------------------------
+   Strict 1200px container
+   ------------------------- */
+.container{
+  width:100%;
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 28px;
+}
+
+/* -------------------------
+   Decorative geometry (fixed background)
+   squares, triangles, circles
+   ------------------------- */
+.bg-shapes {
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-2;
+}
+.bg-shapes svg{ width:100%; height:100%; display:block; }
+
+/* -------------------------
+   Header (login removed)
+   ------------------------- */
+.site-header{
+  position:fixed;
+  inset:0 0 auto 0;
+  height:92px;
+  display:flex;
+  align-items:center;
+  z-index:40;
+  background: linear-gradient(180deg, rgba(247,245,241,0.92), rgba(247,245,241,0.7));
+  border-bottom:1px solid rgba(15,17,19,0.04);
+  backdrop-filter: blur(6px);
+}
+.header-grid{
+  display:grid;
+  grid-template-columns: auto 1fr auto;
+  align-items:center;
+  gap:18px;
+  width:100%;
+}
+
+/* Brand */
+.brand{
+  font-family: "Cormorant Garamond", serif;
+  font-weight:600;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  font-size:var(--fs-sm);
+  color:var(--charcoal);
+}
+
+/* Nav */
+.primary-nav ul{
+  list-style:none;
+  display:flex;
+  gap:28px;
+  margin:0;
+  padding:0;
+  justify-self:center;
+}
+.primary-nav a{
+  text-decoration:none;
+  color:var(--muted);
+  font-size:var(--fs-xs);
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  padding-bottom:6px;
+  transition: color var(--transition-fast);
+}
+.primary-nav a:hover{ color:var(--charcoal) }
+
+/* CTA (only Book) */
+.header-cta{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.btn{
+  font-size:var(--fs-xs);
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  padding:10px 18px;
+  border-radius:999px;
+  border:1px solid rgba(15,17,19,0.06);
+  background:transparent;
+  color:var(--charcoal);
+  cursor:pointer;
+  transition: all var(--transition-med);
+}
+.btn--accent{
+  background:var(--accent);
+  color:#fff;
+  border-color:transparent;
+}
+.btn--accent:hover{ background:var(--accent-dark) }
+
+/* -------------------------
+   Hero editorial spread
+   asymmetric depth, overlapping
+   ------------------------- */
+.hero{
+  padding:84px 0 64px;
+}
+.hero-grid{
+  display:grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap:48px;
+  align-items:start;
+}
+
+/* Left copy */
+.kicker{
+  font-size:var(--fs-xs);
+  text-transform:uppercase;
+  letter-spacing:0.18em;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+.hero-title{
+  font-family: "Cormorant Garamond", serif;
+  font-size:clamp(2.6rem,4.6vw,4.4rem);
+  line-height:0.98;
+  text-transform:uppercase;
+  margin:0 0 18px;
+  letter-spacing:0.02em;
+}
+.hero-title .accent{ color:var(--accent) }
+.lead{
+  max-width:48ch;
+  color:var(--muted);
+  font-size:var(--fs-md);
+  margin-bottom:22px;
+}
+
+/* Actions */
+.hero-actions{ display:flex; gap:14px; margin-bottom:28px }
+
+/* Meta */
+.meta-list{
+  display:flex;
+  gap:18px;
+  font-size:var(--fs-xs);
+  text-transform:uppercase;
+  color:var(--muted);
+  letter-spacing:0.12em;
+}
+
+/* Right visual column */
+.hero-visual{
+  position:relative;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:18px;
+  align-items:start;
+}
+
+/* Primary image card with skewed clip-path and geometric overlay */
+.visual-card{
+  position:relative;
+  border-radius:var(--radius-md);
+  overflow:hidden;
+  box-shadow:var(--shadow-soft);
+  min-height:520px;
+  background-size:cover;
+  background-position:center;
+  transition: transform var(--transition-med), box-shadow var(--transition-med);
+  /* asymmetric clip */
+  clip-path: polygon(0 0, 100% 4%, 100% 100%, 6% 100%);
+}
+.visual-card[data-img="1"]{ background-image: url('image1.jpg'); }
+
+/* geometric accent layer (squares/triangles/circles) */
+.visual-card .geo {
+  position:absolute;
+  inset:auto 6% 6% auto;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  z-index:6;
+}
+.geo .square{
+  width:48px; height:48px; background:var(--sand); border-radius:6px; transform:rotate(6deg);
+  box-shadow: 0 8px 20px rgba(15,17,19,0.08);
+}
+.geo .circle{
+  width:36px; height:36px; background:var(--accent); border-radius:50%;
+  box-shadow: 0 8px 20px rgba(15,17,19,0.12);
+}
+.geo .triangle{
+  width:0; height:0; border-left:22px solid transparent; border-right:22px solid transparent;
+  border-bottom:36px solid rgba(15,17,19,0.06); transform:translateY(6px);
+}
+
+/* overlay card overlapping the image */
+.overlay{
+  position:absolute;
+  right:6%;
+  bottom:8%;
+  width:320px;
+  background:rgba(255,255,255,0.96);
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 18px 40px rgba(15,17,19,0.10);
+  transform:translateY(8%);
+  transition: transform var(--transition-med), background var(--transition-med), color var(--transition-med);
+  z-index:8;
+}
+.overlay h4{
+  margin:0 0 6px;
+  font-family:"Cormorant Garamond", serif;
+  font-size:var(--fs-md);
+}
+.overlay p{ margin:0 0 10px; color:var(--muted); font-size:var(--fs-sm) }
+.overlay a{ color:var(--accent); text-decoration:none; font-size:var(--fs-xs); letter-spacing:0.12em; text-transform:uppercase }
+
+/* small detail card (circle crop) */
+.detail{
+  height:180px;
+  border-radius:14px;
+  overflow:hidden;
+  background-size:cover;
+  background-position:center;
+  box-shadow:0 12px 30px rgba(15,17,19,0.06);
+  clip-path: polygon(6% 0, 100% 0, 100% 100%, 0 86%);
+}
+.detail[data-img="2"]{ background-image: url('image2.jpg'); }
+
+/* hover interactions: boutique light -> dark */
+.visual-card:hover{
+  transform:translateY(-6px);
+  box-shadow:var(--shadow-strong);
+}
+.visual-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent 40%);
+  mix-blend-mode: soft-light;
+  transition: background var(--transition-med);
+}
+.visual-card:hover::after{
+  background: linear-gradient(180deg, rgba(15,17,19,0.56), rgba(216,127,42,0.18));
+}
+.visual-card:hover ~ .overlay,
+.visual-card:hover + .overlay{
+  transform:translateY(0);
+  background:#111;
+  color:#fff;
+}
+.overlay a:hover{ color:var(--accent-dark) }
+
+/* -------------------------
+   Collection grid (services)
+   asymmetric card offsets
+   ------------------------- */
+.collection{
+  padding:64px 0 96px;
+  border-top:1px solid rgba(15,17,19,0.04);
+}
+.collection-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:28px;
+}
+.service-card{
+  display:grid;
+  grid-template-rows: auto 1fr;
+  gap:14px;
+  background:var(--surface);
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+  transition: transform var(--transition-med), box-shadow var(--transition-med);
+}
+.service-card--offset{ transform: translateY(18px); }
+.service-media{
+  height:320px;
+  background-size:cover;
+  background-position:center;
+  clip-path: polygon(0 0, 100% 6%, 100% 100%, 6% 100%);
+}
+.service-media[data-img="3"]{ background-image:url('image3.jpg'); }
+.service-media[data-img="4"]{ background-image:url('image4.jpg'); }
+.service-media[data-img="5"]{ background-image:url('image5.jpg'); }
+
+.service-body{ padding:20px 22px; }
+.service-body h3{
+  font-family:"Cormorant Garamond", serif;
+  margin:0 0 8px;
+  font-size:var(--fs-md);
+  text-transform:uppercase;
+}
+.service-body p{ color:var(--muted); margin:0 0 12px; font-size:var(--fs-sm) }
+.service-meta{ display:flex; justify-content:space-between; gap:12px; font-size:var(--fs-xs); color:var(--muted); text-transform:uppercase; letter-spacing:0.12em }
+
+/* hover: light -> dark overlay on cards */
+.service-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(145deg, rgba(255,255,255,0.18), transparent 50%);
+  transition: background var(--transition-med), transform var(--transition-med);
+  z-index:2;
+}
+.service-card:hover::before{
+  background:linear-gradient(145deg, rgba(15,17,19,0.6), rgba(216,127,42,0.36));
+  transform:scale(1.02);
+}
+.service-card:hover .service-body *{ color:#fff }
+
+/* -------------------------
+   Studio note / booking
+   ------------------------- */
+.studio-note{
+  padding:56px 0 84px;
+  border-top:1px solid rgba(15,17,19,0.04);
+}
+.studio-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:28px;
+  align-items:start;
+}
+.studio-note h2{
+  font-family:"Cormorant Garamond", serif;
+  font-size:var(--fs-lg);
+  margin:0 0 12px;
+}
+.inline-link{
+  color:var(--accent);
+  text-decoration:none;
+  border-bottom:1px solid rgba(216,127,42,0.28);
+  padding-bottom:2px;
+  font-size:var(--fs-xs);
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+}
+.inline-link:hover{ color:var(--accent-dark); border-color:var(--accent-dark) }
+
+/* -------------------------
+   Footer
+   ------------------------- */
+.site-footer{
+  padding:56px 0;
+  border-top:1px solid rgba(15,17,19,0.04);
+  color:var(--muted);
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  gap:28px;
+  align-items:center;
+}
+
+/* -------------------------
+   Responsive
+   ------------------------- */
+@media (max-width:1100px){
+  .hero-grid{ grid-template-columns: 1fr; }
+  .overlay{ position:static; width:100%; transform:none; margin-top:-64px; }
+  .visual-card{ min-height:420px }
+  .collection-grid{ grid-template-columns: repeat(2, 1fr) }
+  .studio-grid{ grid-template-columns: 1fr; }
+}
+@media (max-width:640px){
+  body{ padding-top:84px }
+  .header-grid{ grid-template-columns: 1fr auto; }
+  .primary-nav{ display:none }
+  .collection-grid{ grid-template-columns: 1fr }
+  .visual-card{ min-height:320px }
+  .hero-title{ font-size:clamp(1.8rem,6vw,2.6rem) }
+}
+</style>
+</head>
+<body>
+
+<!-- Decorative SVG shapes: squares, triangles, circles -->
+<div class="bg-shapes" aria-hidden="true">
+  <svg viewBox="0 0 1600 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- large soft circle -->
+    <circle cx="140" cy="120" r="220" fill="rgba(216,127,42,0.06)"/>
+    <!-- rotated square -->
+    <rect x="1100" y="40" width="220" height="220" rx="18" transform="rotate(18 1210 150)" fill="rgba(15,17,19,0.03)"/>
+    <!-- triangle -->
+    <polygon points="300,700 420,520 540,700" fill="rgba(15,17,19,0.03)"/>
+    <!-- small accent circles -->
+    <circle cx="1450" cy="780" r="36" fill="rgba(216,127,42,0.12)"/>
+    <circle cx="1320" cy="640" r="22" fill="rgba(216,127,42,0.08)"/>
+    <!-- grid of tiny squares -->
+    <g fill="rgba(15,17,19,0.02)">
+      <rect x="760" y="520" width="12" height="12"/>
+      <rect x="780" y="520" width="12" height="12"/>
+      <rect x="800" y="520" width="12" height="12"/>
+      <rect x="820" y="520" width="12" height="12"/>
+    </g>
+  </svg>
+</div>
+
+<header class="site-header" role="banner">
+  <div class="container header-grid">
+    <div class="brand">ATELIER</div>
+
+    <nav class="primary-nav" role="navigation" aria-label="Primary">
+      <ul>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#book">Book</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-cta">
+      <a class="btn btn--accent" href="#book" aria-label="Book a session">Book</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" aria-label="Hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="kicker">Edition Nº 01 — Atelier</div>
+        <h1 class="hero-title">Grooming,<br><span class="accent">Standardized</span></h1>
+        <p class="lead">Built for barbers who operate with discipline, consistency, and intent. A quiet practice of proportion and craft — refined, slow, and exact.</p>
+
+        <div class="hero-actions">
+          <a class="btn btn--accent" href="#book">Book Session</a>
+          <a class="btn" href="#work">View Work</a>
+        </div>
+
+        <div class="meta-list" aria-hidden="true">
+          <div>Appointments by invite</div>
+          <div>Mon–Sat · 10–8</div>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="false">
+        <div class="visual-card" data-img="1" role="img" aria-label="Studio vignette with sculptural chair">
+          <div class="geo" aria-hidden="true">
+            <div class="square" title="square"></div>
+            <div class="circle" title="circle"></div>
+            <div class="triangle" title="triangle"></div>
+          </div>
+        </div>
+
+        <div class="overlay" aria-hidden="false">
+          <h4>Material Focus</h4>
+          <p>Oxidized oak and saffron lacquer — surfaces that soften with light and time.</p>
+          <a href="#materials">View finishes</a>
+        </div>
+
+        <div class="detail" data-img="2" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES / COLLECTION -->
+  <section id="services" class="collection" aria-labelledby="services-heading">
+    <div class="container">
+      <header style="display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:28px">
+        <div>
+          <p style="font-size:var(--fs-xs);text-transform:uppercase;color:var(--muted);letter-spacing:0.14em;margin:0">Edition highlights</p>
+          <h2 id="services-heading" style="font-family:'Cormorant Garamond',serif;font-size:var(--fs-lg);margin:8px 0 0;text-transform:uppercase">Sculptural pieces for quiet spaces</h2>
+        </div>
+        <p style="max-width:36ch;color:var(--muted);margin:0;font-size:var(--fs-sm)">A tight selection of anchor pieces designed to layer into interiors. Each object is available in a single, studio-approved configuration.</p>
+      </header>
+
+      <div class="collection-grid" role="list">
+        <article class="service-card" role="listitem" aria-labelledby="s1">
+          <div class="service-media" data-img="3" aria-hidden="true"></div>
+          <div class="service-body">
+            <h3 id="s1">Arc Lounge Chair</h3>
+            <p>A low, generous silhouette with a gently curved backrest. Upholstered in stone boucle with a deep charcoal frame.</p>
+            <div class="service-meta"><span>Lead time: 8 weeks</span><strong>$30</strong></div>
+          </div>
+        </article>
+
+        <article class="service-card service-card--offset" role="listitem" aria-labelledby="s2">
+          <div class="service-media" data-img="4" aria-hidden="true"></div>
+          <div class="service-body">
+            <h3 id="s2">Linea Console</h3>
+            <p>A narrow console that floats along the wall. Finished in matte off-white lacquer with saffron detailing.</p>
+            <div class="service-meta"><span>Lead time: 6 weeks</span><strong>$40</strong></div>
+          </div>
+        </article>
+
+        <article class="service-card" role="listitem" aria-labelledby="s3">
+          <div class="service-media" data-img="5" aria-hidden="true"></div>
+          <div class="service-body">
+            <h3 id="s3">Column Side Table</h3>
+            <p>A compact pedestal with a solid base and chamfered top, designed to sit quietly beside seating.</p>
+            <div class="service-meta"><span>Lead time: 6–9 weeks</span><strong>$20</strong></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDIO NOTE -->
+  <section class="studio-note" aria-labelledby="studio-note-heading">
+    <div class="container studio-grid">
+      <div>
+        <p style="font-size:var(--fs-xs);text-transform:uppercase;color:var(--muted);letter-spacing:0.14em;margin:0">Studio note</p>
+        <h2 id="studio-note-heading" style="font-family:'Cormorant Garamond',serif;font-size:var(--fs-lg);margin:12px 0 8px">Designed for spaces that favor silence over spectacle</h2>
+        <p style="color:var(--muted);max-width:48ch">Our work is guided by architecture rather than trend. Each edition is that year’s exploration into proportion, material, and light. Once an edition closes, the pieces are never reissued.</p>
+        <p style="margin-top:12px"><a class="inline-link" href="#book">Request a studio appointment</a></p>
+      </div>
+
+      <div aria-hidden="true" style="display:flex;flex-direction:column;gap:18px;align-items:flex-end">
+        <div style="width:220px;height:220px;border-radius:18px;background-image:url('image4.jpg');background-size:cover;background-position:center;box-shadow:var(--shadow-soft);clip-path:polygon(0 0,100% 4%,100% 100%,6% 100%);"></div>
+        <div style="width:160px;height:160px;border-radius:999px;background-image:url('image5.jpg');background-size:cover;background-position:center;box-shadow:0 12px 30px rgba(15,17,19,0.06);"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section id="book" style="padding:48px 0 120px;">
+    <div class="container" style="text-align:center">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:var(--fs-lg);margin-bottom:12px">Book a session</h2>
+      <p style="max-width:48ch;margin:0 auto 18px;color:var(--muted)">Appointments only. Scheduling handled via our booking partner.</p>
+      <a class="btn btn--accent" href="https://booksy.com" target="_blank" rel="noopener">Continue to Booksy</a>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer" role="contentinfo">
+  <div class="container footer-grid">
+    <div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:var(--fs-sm);text-transform:uppercase;letter-spacing:0.12em">ATELIER BARBERING</div>
+      <div style="margin-top:8px;color:var(--muted)">Mon–Sat · 10–8</div>
+    </div>
+    <div style="text-align:right;color:var(--muted)">
+      <div>Instagram</div>
+      <div style="margin-top:6px">Location</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
